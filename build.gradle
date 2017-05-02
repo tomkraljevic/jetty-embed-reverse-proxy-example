@@ -17,12 +17,13 @@ repositories {
 }
 
 dependencies {
-//    compile "org.eclipse.jetty.aggregate:jetty-servlet:8.1.17.v20150415"
-//    compile "org.eclipse.jetty:jetty-plus:8.1.17.v20150415"
+    compile "org.eclipse.jetty.aggregate:jetty-servlet:8.1.17.v20150415"
+    compile "org.eclipse.jetty.aggregate:jetty-plus:8.1.17.v20150415"
+    compile "org.eclipse.jetty.aggregate:jetty-all-server:8.1.17.v20150415"
 
-    compile "org.eclipse.jetty:jetty-server:9.2.11.v20150529"
-    compile "org.eclipse.jetty:jetty-proxy:9.2.11.v20150529"
-    compile "org.eclipse.jetty:jetty-servlet:9.2.11.v20150529"
+//    compile "org.eclipse.jetty:jetty-server:9.2.11.v20150529"
+//    compile "org.eclipse.jetty:jetty-proxy:9.2.11.v20150529"
+//    compile "org.eclipse.jetty:jetty-servlet:9.2.11.v20150529"
 }
 
 //
@@ -37,7 +38,6 @@ compileJava {
 shadowJar {
   mergeServiceFiles()
   classifier = ''
-  relocate 'org.joda.time', 'ai.h2o.org.joda.time'
   exclude 'META-INF/*.DSA'
   exclude 'META-INF/*.SF'
   exclude 'synchronize.properties'

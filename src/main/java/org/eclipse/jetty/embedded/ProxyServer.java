@@ -18,17 +18,17 @@
 
 package org.eclipse.jetty.embedded;
 
-import org.eclipse.jetty.proxy.AsyncProxyServlet;
-import org.eclipse.jetty.proxy.ConnectHandler;
-import org.eclipse.jetty.proxy.ProxyServlet;
+//import org.eclipse.jetty.servlets.AsyncProxyServlet;
+import org.eclipse.jetty.server.bio.SocketConnector;
+import org.eclipse.jetty.server.handler.ConnectHandler;
 import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.server.handler.ContextHandler;
 import org.eclipse.jetty.servlet.FilterHolder;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
+import org.eclipse.jetty.servlets.ProxyServlet;
 
 //import org.eclipse.jetty.server.nio.SelectChannelConnector;
 
@@ -106,9 +106,12 @@ public class ProxyServer
 
   private static void reverseProxy() throws Exception{
     Server server = new Server();
-    ServerConnector connector = new ServerConnector(server);
+
+    SocketConnector connector = new SocketConnector();
+    connector.setHost("127.0.0.1");
     connector.setPort(8888);
-    server.addConnector(connector);
+
+    server.setConnectors(new Connector[]{connector});
 
     // Setup proxy handler to handle CONNECT methods
     ConnectHandler proxy = new ConnectHandler();
@@ -116,9 +119,9 @@ public class ProxyServer
 
     // Setup proxy servlet
     ServletContextHandler context = new ServletContextHandler(proxy, "/", ServletContextHandler.SESSIONS);
-    ServletHolder proxyServlet = new ServletHolder(AsyncProxyServlet.Transparent.class);
-    proxyServlet.setInitParameter("proxyTo", "http://localhost:54321");
-    proxyServlet.setInitParameter("prefix", "/");
+    ServletHolder proxyServlet = new ServletHolder(ProxyServlet.Transparent.class);
+    proxyServlet.setInitParameter("ProxyTo", "http://localhost:54321/");
+    proxyServlet.setInitParameter("Prefix", "/");
     context.addServlet(proxyServlet, "/*");
 
     server.start();
