@@ -1,0 +1,64 @@
+/*
+ * This is a simple build file for building H2O applications.
+ * 
+ * For more details please follow README.md
+ */
+
+apply plugin: 'com.github.johnrengelman.shadow'
+apply plugin: 'java'
+apply plugin: 'idea'
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '2.7'
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+//    compile "org.eclipse.jetty.aggregate:jetty-servlet:8.1.17.v20150415"
+//    compile "org.eclipse.jetty:jetty-plus:8.1.17.v20150415"
+
+    compile "org.eclipse.jetty:jetty-server:9.2.11.v20150529"
+    compile "org.eclipse.jetty:jetty-proxy:9.2.11.v20150529"
+    compile "org.eclipse.jetty:jetty-servlet:9.2.11.v20150529"
+}
+
+//
+// Setup Java plugin
+//
+sourceCompatibility = 1.7
+targetCompatibility = 1.7
+compileJava { 
+    options.debug = true 
+}
+
+shadowJar {
+  mergeServiceFiles()
+  classifier = ''
+  relocate 'org.joda.time', 'ai.h2o.org.joda.time'
+  exclude 'META-INF/*.DSA'
+  exclude 'META-INF/*.SF'
+  exclude 'synchronize.properties'
+  exclude 'uploader.properties'
+  exclude 'test.properties'
+  exclude 'cockpitlite.properties'
+  exclude 'devpay_products.properties'
+  manifest {
+    attributes 'Main-Class': 'org.eclipse.jetty.embedded.ProxyServer'
+  }
+}
+
+jar.finalizedBy shadowJar
+
+buildscript {
+    repositories {
+        mavenCentral()
+        jcenter()
+    }
+
+    dependencies {
+        classpath 'com.github.jengelman.gradle.plugins:shadow:1.2.1'
+    }
+}
